@@ -46,6 +46,11 @@ export function useAskAI(onComplete?: (request: AskRequest, answer: string) => v
           throw new Error("Не удалось связаться с сервером. Проверьте подключение");
         });
 
+        if (response.status === 401) {
+          window.location.replace("/login");
+          throw new Error("Сессия истекла. Перенаправляем на страницу входа…");
+        }
+
         if (!response.ok || !response.body) {
           throw new Error(await readError(response));
         }

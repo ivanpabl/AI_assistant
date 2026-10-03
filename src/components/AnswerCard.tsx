@@ -5,7 +5,7 @@ import { getMode } from "@/lib/modes";
 import type { ModeId } from "@/lib/types";
 import { CopyButton } from "./CopyButton";
 import { RetryIcon } from "./icons";
-import { Markdown } from "./Markdown";
+import { SafeMarkdown } from "./SafeMarkdown";
 
 interface AnswerCardProps {
   status: AskStatus;
@@ -47,7 +47,7 @@ export function AnswerCard({ status, question, mode, answer, error, durationMs, 
 
         {answer && (
           <div className={streaming ? "streaming-caret" : undefined}>
-            <Markdown content={answer} />
+            <SafeMarkdown content={answer} />
           </div>
         )}
 
