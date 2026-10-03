@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { anthropic, MODEL, MAX_OUTPUT_TOKENS } from "@/lib/anthropic";
 import { MAX_QUESTION_LENGTH } from "@/lib/config";
 import { isModeId } from "@/lib/modes";
-import { buildSystemPrompt } from "@/lib/prompts";
+import { buildSystemPrompt, buildUserMessage } from "@/lib/prompts";
 import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 import type { ApiErrorBody, AskRequest } from "@/lib/types";
 
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       model: MODEL,
       max_tokens: MAX_OUTPUT_TOKENS,
       system: buildSystemPrompt(parsed.mode),
-      messages: [{ role: "user", content: parsed.question }],
+      messages: [{ role: "user", content: buildUserMessage(parsed.mode, parsed.question) }],
       output_config: { effort: "medium" },
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
