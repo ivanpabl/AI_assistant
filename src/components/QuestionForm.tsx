@@ -89,6 +89,7 @@ export function QuestionForm({
 
         {busy ? (
           <button
+            key="stop"
             type="button"
             onClick={onStop}
             className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
@@ -98,6 +99,7 @@ export function QuestionForm({
           </button>
         ) : (
           <button
+            key="submit"
             type="submit"
             disabled={!canSubmit}
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-600/30 transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:shadow-none dark:disabled:bg-zinc-700"
