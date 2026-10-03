@@ -3,7 +3,7 @@ import { anthropic, MODEL, MAX_OUTPUT_TOKENS } from "@/lib/anthropic";
 import { MAX_QUESTION_LENGTH } from "@/lib/config";
 import { isModeId } from "@/lib/modes";
 import { buildSystemPrompt } from "@/lib/prompts";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, clientIp } from "@/lib/rate-limit";
 import type { ApiErrorBody, AskRequest } from "@/lib/types";
 
 function jsonError(status: number, error: string, headers?: HeadersInit) {
@@ -43,16 +43,12 @@ function toUserError(error: unknown): { status: number; message: string } {
   return { status: 500, message: "Что-то пошло не так. Попробуйте ещё раз" };
 }
 
-function clientKey(request: Request): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
-}
-
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return jsonError(500, "API-ключ не настроен: добавьте ANTHROPIC_API_KEY в .env.local и перезапустите сервер");
   }
 
-  const limit = checkRateLimit(clientKey(request));
+  const limit = checkRateLimit(`ask:${clientIp(request)}`);
   if (!limit.ok) {
     return jsonError(429, `Слишком много запросов. Повторите через ${limit.retryAfterSec} с`, {
       "Retry-After": String(limit.retryAfterSec),

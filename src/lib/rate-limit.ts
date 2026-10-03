@@ -6,6 +6,10 @@ const MAX_TRACKED_KEYS = 1000;
 
 const hits = new Map<string, number[]>();
 
+export function clientIp(request: Request): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
+}
+
 function sweep(now: number) {
   for (const [key, times] of hits) {
     if (times.every((t) => now - t >= WINDOW_MS)) hits.delete(key);

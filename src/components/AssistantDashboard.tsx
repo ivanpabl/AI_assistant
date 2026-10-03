@@ -11,7 +11,12 @@ import { EmptyState } from "./EmptyState";
 import { HistoryPanel } from "./HistoryPanel";
 import { QuestionForm } from "./QuestionForm";
 
-export function AssistantDashboard() {
+async function logout() {
+  await fetch("/api/session", { method: "DELETE" }).catch(() => null);
+  window.location.replace("/login");
+}
+
+export function AssistantDashboard({ canLogout }: { canLogout: boolean }) {
   const historyItems = useHistory();
   const [question, setQuestion] = useState("");
   const [mode, setMode] = useState<ModeId>(DEFAULT_MODE);
@@ -53,10 +58,19 @@ export function AssistantDashboard() {
         >
           ✦
         </div>
-        <div>
+        <div className="flex-1">
           <h1 className="text-xl font-semibold tracking-tight">Team AI Assistant</h1>
           <p className="text-sm text-zinc-500">Объяснит, сожмёт, напишет и отревьюит — за пару секунд</p>
         </div>
+        {canLogout && (
+          <button
+            type="button"
+            onClick={logout}
+            className="rounded-lg px-3 py-1.5 text-sm text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          >
+            Выйти
+          </button>
+        )}
       </header>
 
       <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
